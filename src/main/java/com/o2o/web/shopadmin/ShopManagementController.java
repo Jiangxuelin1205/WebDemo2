@@ -2,9 +2,13 @@ package com.o2o.web.shopadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.o2o.dto.ShopExecution;
+import com.o2o.entity.Area;
 import com.o2o.entity.PersonInfo;
 import com.o2o.entity.Shop;
+import com.o2o.entity.ShopCategory;
 import com.o2o.enums.ShopStateEnum;
+import com.o2o.service.AreaService;
+import com.o2o.service.ShopCategoryService;
 import com.o2o.service.ShopService;
 import com.o2o.util.HttpServletRequestUtil;
 import com.o2o.util.ImageUtil;
@@ -24,7 +28,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -34,7 +40,33 @@ public class ShopManagementController {
     @Autowired
     ShopService shopService;
 
-    @RequestMapping(value="/registershop",method=RequestMethod.POST)
+    @Autowired
+    ShopCategoryService shopCategoryService;
+
+    @Autowired
+    AreaService areaService;
+
+    @ResponseBody
+    @RequestMapping(value = "/getshopinitinfo", method = RequestMethod.GET)
+    private Map<String, Object> getShopInitInfo() {
+        Map<String, Object> modelMap = new HashMap<>();
+        List<Area> areaList = new ArrayList<>();
+        List<ShopCategory> shopCategoryList = new ArrayList<>();
+        try {
+            areaList = areaService.getAreaList();
+            shopCategoryList = shopCategoryService.getShopCategoryList(new ShopCategory());
+            modelMap.put("shopCategoryList", shopCategoryList);
+            modelMap.put("areaList", areaList);
+            modelMap.put("success", true);
+        } catch (Exception e) {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", e.getMessage());
+        }
+
+        return modelMap;
+    }
+
+    @RequestMapping(value = "/registershop", method = RequestMethod.POST)
     @ResponseBody
     private Map<String, Object> registerShop(HttpServletRequest request) {
         Map<String, Object> modelMap = new HashMap<>();
