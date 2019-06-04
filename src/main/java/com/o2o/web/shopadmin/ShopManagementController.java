@@ -11,7 +11,10 @@ import com.o2o.util.ImageUtil;
 import com.o2o.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -31,6 +34,8 @@ public class ShopManagementController {
     @Autowired
     ShopService shopService;
 
+    @RequestMapping(value="/registershop",method=RequestMethod.POST)
+    @ResponseBody
     private Map<String, Object> registerShop(HttpServletRequest request) {
         Map<String, Object> modelMap = new HashMap<>();
         String shopStr = HttpServletRequestUtil.getString(request, "shopStr");
