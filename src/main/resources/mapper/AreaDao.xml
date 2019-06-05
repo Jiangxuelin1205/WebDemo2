@@ -9,5 +9,4 @@
         FROM tb_area
         ORDER BY priority DESC
     </select>
-
 </mapper>

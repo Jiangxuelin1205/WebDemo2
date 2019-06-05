@@ -32,7 +32,7 @@ public class ShopServiceImpl implements ShopService {
      **/
     @Override
     @Transactional
-    public ShopExecution addShop(Shop shop, InputStream shopImgInputStream,String fileName) {
+    public ShopExecution addShop(Shop shop, InputStream shopImgInputStream, String fileName) {
         if (shop == null) {
             return new ShopExecution(ShopStateEnum.NULL_SHOP);
         }
@@ -50,7 +50,7 @@ public class ShopServiceImpl implements ShopService {
                 if (shopImgInputStream != null) {
                     try {
                         //插入图片信息，首先生成图片
-                        addShopImg(shop, shopImgInputStream,fileName);
+                        addShopImg(shop, shopImgInputStream, fileName);
                     } catch (Exception e) {
                         throw new ShopOperationException("插入图片信息失败");
                     }
@@ -66,11 +66,23 @@ public class ShopServiceImpl implements ShopService {
         return new ShopExecution(ShopStateEnum.SUCCESS);
     }
 
-    private void addShopImg(Shop shop, InputStream shopImgInputStream,String fileName) {
+    private void addShopImg(Shop shop, InputStream shopImgInputStream, String fileName) {
         //获取图片目录的相对值
         String destination = PathUtil.getShopImgPath(shop.getShopId());
         //获取图片目录的绝对值
-        String shopImgAddress = ImageUtil.generateThumbnails(shopImgInputStream,fileName, destination);//生成图片存储的相对地址，并且将图片放入该地址
+        String shopImgAddress = ImageUtil.generateThumbnails(shopImgInputStream, fileName, destination);//生成图片存储的相对地址，并且将图片放入该地址
         shop.setShopImg(shopImgAddress);
+    }
+
+    @Override
+    public Shop getByShopId(long shopId) {
+        return shopDao.queryByShopId(shopId);
+    }
+
+    @Override
+    public ShopExecution modifyShop(Shop shop, InputStream inputStream, String file) throws ShopOperationException {
+        //判断是否需要处理图片
+
+        //更新店铺信息
     }
 }
