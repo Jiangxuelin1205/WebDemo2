@@ -47,6 +47,57 @@ public class ShopManagementController {
     AreaService areaService;
 
     @ResponseBody
+    @RequestMapping(value = "/getshopmanagementinfo", method = RequestMethod.GET)
+    private Map<String, Object> getShopManagementInfo(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        long shopId = HttpServletRequestUtil.getLong(request, "shopId");
+        if (shopId <= 0) {//在request里没有找到shopId，则在session里寻找
+            Object currentShop = request.getSession().getAttribute("currentShop");
+            if (currentShop == null) {
+                modelMap.put("redirect", true);
+                modelMap.put("url", "/o2o/shopadmin/shoplist");
+            } else {
+                Shop shop = (Shop) currentShop;
+                modelMap.put("shopId", shop.getShopId());
+                modelMap.put("redirect", false);
+            }
+
+        } else {
+            Shop currentShop = new Shop();
+            currentShop.setShopId(shopId);
+            request.getSession().setAttribute("currentShop", currentShop);
+            modelMap.put("redirect", false);
+        }
+        //最终要保证session中既有shop实体类又有shopId
+        return modelMap;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getshoplist", method = RequestMethod.GET)
+    private Map<String, Object> getShopList(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+//        PersonInfo personInfo= (PersonInfo) request.getSession().getAttribute("user");
+        PersonInfo user = new PersonInfo();
+        user.setUserId(1L);
+        request.setAttribute("user", user);
+        user = (PersonInfo) request.getAttribute("user");
+        try {
+            Shop shopCondition = new Shop();
+            shopCondition.setOwner(user);
+            ShopExecution se = shopService.getShopList(shopCondition, 0, 100);
+            List<Shop> shopList = se.getShops();
+            int shopCount = se.getCount();
+            modelMap.put("success", true);
+            modelMap.put("shopList", shopList);
+            modelMap.put("user", user);
+        } catch (Exception e) {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/getshopbyid", method = RequestMethod.GET)
     private Map<String, Object> getShopById(HttpServletRequest request) {
         Map<String, Object> modelMap = new HashMap<>();
