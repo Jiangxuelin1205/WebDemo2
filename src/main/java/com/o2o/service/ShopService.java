@@ -6,6 +6,7 @@ import com.o2o.exception.ShopOperationException;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Service层需要调用dao层，以及增加一些处理事务的操作
@@ -18,5 +19,7 @@ public interface ShopService {
     Shop getByShopId(long shopId);
 
     ShopExecution modifyShop(Shop shop,InputStream inputStream,String file)throws ShopOperationException;
+
+    ShopExecution getShopList(Shop shopCondition,int pageIndex,int pageSize);
 
 }

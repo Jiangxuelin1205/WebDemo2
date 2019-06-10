@@ -60,4 +60,15 @@ public class ShopServiceTest extends BaseTest {
         ShopExecution shopExecution = shopService.modifyShop(shop, is, "dabai.jpg");
         System.out.println(shopExecution.getShop().getShopImg());
     }
+
+    @Test
+    public void get_shop_list(){
+        PersonInfo owner=new PersonInfo();
+        owner.setUserId(1L);
+        Shop shopCondition=new Shop();
+        shopCondition.setOwner(owner);
+        ShopExecution se=shopService.getShopList(shopCondition,2,5);
+        System.out.println(se.getShops().size());
+        System.out.println(se.getCount());
+    }
 }

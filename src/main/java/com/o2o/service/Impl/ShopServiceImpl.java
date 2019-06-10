@@ -7,6 +7,7 @@ import com.o2o.enums.ShopStateEnum;
 import com.o2o.exception.ShopOperationException;
 import com.o2o.service.ShopService;
 import com.o2o.util.ImageUtil;
+import com.o2o.util.PageCalculator;
 import com.o2o.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -86,7 +88,7 @@ public class ShopServiceImpl implements ShopService {
         }
         //判断是否需要处理图片
         try {
-            if (shopImgInputStream != null && fileName != null &&! fileName.equals("")) {
+            if (shopImgInputStream != null && fileName != null && !fileName.equals("")) {
                 Shop tempShop = shopDao.queryByShopId(shop.getShopId());
                 if (tempShop.getShopImg() != null) {
                     ImageUtil.deleteFileOrPath(tempShop.getShopImg());
@@ -100,10 +102,26 @@ public class ShopServiceImpl implements ShopService {
                 return new ShopExecution(ShopStateEnum.INNER_ERROR);
             } else {
                 shopDao.queryByShopId(shop.getShopId());
-                return new ShopExecution(ShopStateEnum.SUCCESS,shop);
+                return new ShopExecution(ShopStateEnum.SUCCESS, shop);
             }
         } catch (Exception e) {
             throw new ShopOperationException("modify shop error " + e.getMessage());
         }
+    }
+
+    @Override
+    public ShopExecution getShopList(Shop shop, int pageIndex, int pageSize) {
+        int rowIndex = PageCalculator.calculateRowIndex(pageIndex, pageSize);
+        //显示一整页
+        List<Shop> shopList = shopDao.queryShopList(shop, rowIndex, pageSize);
+        int shopCount = shopDao.queryShopCount(shop);
+        ShopExecution se = new ShopExecution();
+        if (shopList != null) {
+            se.setCount(shopCount);
+            se.setShops(shopList);
+        } else {
+            se.setState(ShopStateEnum.INNER_ERROR.getState());
+        }
+        return se;
     }
 }
