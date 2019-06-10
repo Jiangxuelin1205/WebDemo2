@@ -47,6 +47,24 @@ public class ShopManagementController {
     AreaService areaService;
 
     @ResponseBody
+    @RequestMapping(value = "/getshopbyid", method = RequestMethod.GET)
+    private Map<String, Object> getShopById(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        Long shopId = HttpServletRequestUtil.getLong(request, "shopId");
+        try {
+            Shop shop = shopService.getByShopId(shopId);
+            List<Area> areaList = areaService.getAreaList();
+            modelMap.put("shop", shop);
+            modelMap.put("areaList", areaList);
+            modelMap.put("success", true);
+        } catch (Exception e) {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/getshopinitinfo", method = RequestMethod.GET)
     private Map<String, Object> getShopInitInfo() {
         Map<String, Object> modelMap = new HashMap<>();
@@ -66,6 +84,7 @@ public class ShopManagementController {
         return modelMap;
     }
 
+    //todo:unchkeck
     @RequestMapping(value = "/registershop", method = RequestMethod.POST)
     @ResponseBody
     private Map<String, Object> registerShop(HttpServletRequest request) {
@@ -95,8 +114,7 @@ public class ShopManagementController {
         }
         //注册店铺
         if (shop != null && shopImg != null) {
-            PersonInfo owner = new PersonInfo();
-            owner.setUserId(1L);//todo:硬编码，以后会完善
+            PersonInfo owner = (PersonInfo) request.getSession().getAttribute("user");//todo :完成登录逻辑之后 ,user为登录后从session中获取的对象
             shop.setOwner(owner);
             ShopExecution se = null;
             try {
@@ -104,6 +122,13 @@ public class ShopManagementController {
                 //CommonsMultipartFile中有函数getInputStream，我们可以利用该函数将CommonsMultipartFile转换成为一个File类型的变量
                 if (se.getState() == ShopStateEnum.CHECK.getState()) {
                     modelMap.put("success", true);
+                    List<Shop> shopList = (List<Shop>) request.getSession().getAttribute("shopList");
+                    if (shopList == null || shopList.size() == 0) {
+                        shopList = new ArrayList<>();
+                    }
+                    shopList.add(se.getShop());
+                    request.getSession().setAttribute("shopList", shopList);
+
                 } else {
                     modelMap.put("success", false);
                     modelMap.put("errorMessage", se.getStateInfo());
@@ -120,4 +145,57 @@ public class ShopManagementController {
         }
 
     }
+
+    //todo:unchkeck
+    @RequestMapping(value = "/modifyshop", method = RequestMethod.POST)
+    @ResponseBody
+    private Map<String, Object> modifyShop(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        String shopStr = HttpServletRequestUtil.getString(request, "shopStr");
+        ObjectMapper mapper = new ObjectMapper();
+
+        //从request中获取商铺信息
+        Shop shop = null;
+        try {
+            shop = mapper.readValue(shopStr, Shop.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        CommonsMultipartFile shopImg = null;
+        CommonsMultipartResolver resolver = new CommonsMultipartResolver(
+                request.getSession().getServletContext()
+        );//解析文件上传,从当前session的上下文中获取上传内容
+        if (resolver.isMultipart(request)) {
+            MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+            shopImg = (CommonsMultipartFile) multipartHttpServletRequest.getFile("shopImg");
+        }
+        //修改店铺
+        if (shop != null && shop.getShopId() != null) {
+            ShopExecution se = null;
+            try {
+                if (shopImg == null) {
+                    se = shopService.modifyShop(shop, null, null);//shopImg报错，因为addShop接收的是一个File类型的参数。
+                } else {
+                    se = shopService.modifyShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
+                }//shopImg报错，因为addShop接收的是一个File类型的参数。
+                //CommonsMultipartFile中有函数getInputStream，我们可以利用该函数将CommonsMultipartFile转换成为一个File类型的变量
+                if (se.getState() == ShopStateEnum.SUCCESS.getState()) {
+                    modelMap.put("success", true);
+                } else {
+                    modelMap.put("success", false);
+                    modelMap.put("errorMessage", se.getStateInfo());
+                }
+            } catch (IOException e) {
+                modelMap.put("success", false);
+                modelMap.put("errorMessage", se.getStateInfo());
+            }
+            return modelMap;
+        } else {
+            modelMap.put("success", false);
+            modelMap.put("errorMessage", "请输入店铺Id");
+            return modelMap;
+        }
+
+    }
+
 }

@@ -9,6 +9,9 @@
         create_time,last_edit_time,parent_id
         FROM tb_shop_category
         <where>
+            <if test="ShopCategoryCondition!=null">
+                AND parent_id is not NULL
+            </if>
             <if test="ShopCategoryCondition.parent!=null">
                 AND parent_id=#{ShopCategoryCondition.parent.shopCategoryId}
             </if>
