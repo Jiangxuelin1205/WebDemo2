@@ -36,7 +36,7 @@ public class ImageUtil {
         return newFile;
     }
 
-    public static String generateThumbnails(InputStream fileInputStream, String fileName,String targetAddress) {
+    public static String generateThumbnails(InputStream fileInputStream, String fileName, String targetAddress) {
         String realFileName = getRandomFileName();//由于用户传入的图片可能重名，因此生成一个新的名称
         String extension = getFileExtension(fileName);//获取图片的扩展名
         makeDirPath(targetAddress);//生成图片存储的绝对路径
@@ -80,7 +80,7 @@ public class ImageUtil {
     /**
      * 生成指定格式的随机文件名，生成方法为 当前时间+一个随机的五位数
      */
-    public static String getRandomFileName() {
+    private static String getRandomFileName() {
         //获取随机的五位数
         int randomNumber = r.nextInt(89999) + 10000;
         String now = sDateFormat.format(new Date());
@@ -92,5 +92,24 @@ public class ImageUtil {
         Thumbnails.of(new File("./src/main/resources/blackandwhite.jpg")).size(500, 500)
                 .watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(path + "/watermark.jpg")), 0.25f)
                 .outputQuality(0.8f).toFile("./src/main/resources/newblackandwhite.jpg");
+    }
+
+    /**
+     * 判断storePath是文件还是路径。如果是路径，则删除改路径下所有的文件，如果是文件，则删除该文件。
+     **/
+    public static void deleteFileOrPath(String storePath) {
+        File fileOrPath = new File(PathUtil.getImgBasePath() + storePath);
+        if (fileOrPath.exists()) {
+            if (fileOrPath.isDirectory()) {
+                File[] files = fileOrPath.listFiles();
+                assert files != null;
+                for (File file : files) {
+                    //noinspection ResultOfMethodCallIgnored
+                    file.delete();
+                }
+            }
+            //noinspection ResultOfMethodCallIgnored
+            fileOrPath.delete();
+        }
     }
 }

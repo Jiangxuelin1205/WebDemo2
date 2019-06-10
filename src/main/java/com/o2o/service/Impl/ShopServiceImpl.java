@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 
@@ -72,6 +71,7 @@ public class ShopServiceImpl implements ShopService {
         //获取图片目录的绝对值
         String shopImgAddress = ImageUtil.generateThumbnails(shopImgInputStream, fileName, destination);//生成图片存储的相对地址，并且将图片放入该地址
         shop.setShopImg(shopImgAddress);
+
     }
 
     @Override
@@ -80,9 +80,30 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public ShopExecution modifyShop(Shop shop, InputStream inputStream, String file) throws ShopOperationException {
+    public ShopExecution modifyShop(Shop shop, InputStream shopImgInputStream, String fileName) throws ShopOperationException {
+        if (shop == null || shop.getShopId() == null) {
+            return new ShopExecution(ShopStateEnum.NULL_SHOP);
+        }
         //判断是否需要处理图片
-
-        //更新店铺信息
+        try {
+            if (shopImgInputStream != null && fileName != null &&! fileName.equals("")) {
+                Shop tempShop = shopDao.queryByShopId(shop.getShopId());
+                if (tempShop.getShopImg() != null) {
+                    ImageUtil.deleteFileOrPath(tempShop.getShopImg());
+                }
+                addShopImg(shop, shopImgInputStream, fileName);
+            }
+            //更新店铺信息
+            shop.setLastEditTime(new Date());
+            int effectedNumber = shopDao.updateShop(shop);
+            if (effectedNumber <= 0) {
+                return new ShopExecution(ShopStateEnum.INNER_ERROR);
+            } else {
+                shopDao.queryByShopId(shop.getShopId());
+                return new ShopExecution(ShopStateEnum.SUCCESS,shop);
+            }
+        } catch (Exception e) {
+            throw new ShopOperationException("modify shop error " + e.getMessage());
+        }
     }
 }

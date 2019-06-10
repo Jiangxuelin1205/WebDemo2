@@ -1,6 +1,7 @@
 package com.o2o.util;
 
 public class PathUtil {
+
     /**
      * 返回项目图片的根路径
      * 和返回项目的子路径
@@ -9,11 +10,11 @@ public class PathUtil {
 
     //处理缩略图
 
-    public static String getImgBasePath() {
+    static String getImgBasePath() {
         String os = System.getProperty("os.name");
-        String basePath = "";
+        String basePath;
         if (os.toLowerCase().startsWith("win")) {
-            basePath = "G:/IntelleJIdeaWorkingPlace/WebDemo/src/main/java/com/o2o/images/";
+            basePath = "G:/IntelleJIdeaWorkingPlace/WebDemo2/src/main/java/com/o2o/images/";
         } else {
             basePath = "/home/image";
         }
