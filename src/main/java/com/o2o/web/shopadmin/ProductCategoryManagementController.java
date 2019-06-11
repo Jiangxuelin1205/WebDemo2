@@ -22,7 +22,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/shopadmin")
-public class ProductManagementController {
+public class ProductCategoryManagementController {
 
     @Autowired
     ProductCategoryService productCategoryService;
@@ -77,6 +77,33 @@ public class ProductManagementController {
             modelMap.put("success", false);
             modelMap.put("errMsg", e.toString());
             return modelMap;
+        }
+    }
+
+    @RequestMapping(value = "/removeproductcategory", method = RequestMethod.POST)
+    @ResponseBody
+    private Map<String, Object> removeProductCategory(Long productCategoryId, HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        if (productCategoryId <= 0 || request == null) {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", "请至少选择一个商品类别");
+            return modelMap;
+        } else {
+            try {
+                Shop currentShop = (Shop) request.getSession().getAttribute("currentShop");
+                ProductCategoryExecution pc = productCategoryService.deleteProductCategory(productCategoryId, currentShop.getShopId());
+                if (pc.getState() == ProductCategoryStateEnum.SUCCESS.getState()) {
+                    modelMap.put("success", true);
+                } else {
+                    modelMap.put("success", false);
+                    modelMap.put("errMsg", pc.getStateInfo());
+                }
+                return modelMap;
+            } catch (ProductCategoryOperationException e) {
+                modelMap.put("success", false);
+                modelMap.put("errMsg", e.getMessage());
+                return modelMap;
+            }
         }
     }
 }

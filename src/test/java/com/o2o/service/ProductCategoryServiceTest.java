@@ -6,6 +6,7 @@ import com.o2o.entity.ProductCategory;
 import com.o2o.exception.ProductCategoryOperationException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,5 +44,11 @@ public class ProductCategoryServiceTest extends BaseTest {
         ProductCategoryExecution pc = productCategoryService.batchAddProductCategory(list);
         System.out.println(pc.getState());
         System.out.println(pc.getStateInfo());
+    }
+
+    @Test
+    public void delete() throws ProductCategoryOperationException {
+        ProductCategoryExecution pc=productCategoryService.deleteProductCategory(3,2);
+        System.out.println(pc.getState());
     }
 }

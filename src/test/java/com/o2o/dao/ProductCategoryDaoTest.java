@@ -39,4 +39,9 @@ public class ProductCategoryDaoTest extends BaseTest {
         list.add(p2);
         System.out.println(productCategoryDao.batchInsertProductCategory(list));
     }
+
+    @Test
+    public void delete(){
+        System.out.println(productCategoryDao.deleteProductCategory(2,2));
+    }
 }
