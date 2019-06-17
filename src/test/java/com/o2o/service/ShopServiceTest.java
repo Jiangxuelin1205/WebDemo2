@@ -1,6 +1,7 @@
 package com.o2o.service;
 
 import com.o2o.BaseTest;
+import com.o2o.dto.ImageHolder;
 import com.o2o.dto.ShopExecution;
 import com.o2o.entity.Area;
 import com.o2o.entity.PersonInfo;
@@ -46,7 +47,7 @@ public class ShopServiceTest extends BaseTest {
 
         File img = new File("./src/main/resources/blackandwhite.jpg");
         InputStream is = new FileInputStream(img);
-        ShopExecution se = shopService.addShop(shop, is, img.getName());
+        ShopExecution se = shopService.addShop(shop, new ImageHolder(img.getName(), is));
         assertEquals(ShopStateEnum.SUCCESS.getState(), se.getState());
     }
 
@@ -57,17 +58,17 @@ public class ShopServiceTest extends BaseTest {
         shop.setShopName("修改后的商铺名称");
         File img = new File("./src/main/resources/dabai.jpg");
         InputStream is = new FileInputStream(img);
-        ShopExecution shopExecution = shopService.modifyShop(shop, is, "dabai.jpg");
+        ShopExecution shopExecution = shopService.modifyShop(shop, new ImageHolder("dabai.jpg",is));
         System.out.println(shopExecution.getShop().getShopImg());
     }
 
     @Test
-    public void get_shop_list(){
-        PersonInfo owner=new PersonInfo();
+    public void get_shop_list() {
+        PersonInfo owner = new PersonInfo();
         owner.setUserId(1L);
-        Shop shopCondition=new Shop();
+        Shop shopCondition = new Shop();
         shopCondition.setOwner(owner);
-        ShopExecution se=shopService.getShopList(shopCondition,2,5);
+        ShopExecution se = shopService.getShopList(shopCondition, 2, 5);
         System.out.println(se.getShops().size());
         System.out.println(se.getCount());
     }

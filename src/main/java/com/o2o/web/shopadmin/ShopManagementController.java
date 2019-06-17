@@ -1,6 +1,7 @@
 package com.o2o.web.shopadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.o2o.dto.ImageHolder;
 import com.o2o.dto.ShopExecution;
 import com.o2o.entity.Area;
 import com.o2o.entity.PersonInfo;
@@ -119,8 +120,8 @@ public class ShopManagementController {
     @RequestMapping(value = "/getshopinitinfo", method = RequestMethod.GET)
     private Map<String, Object> getShopInitInfo() {
         Map<String, Object> modelMap = new HashMap<>();
-        List<Area> areaList = new ArrayList<>();
-        List<ShopCategory> shopCategoryList = new ArrayList<>();
+        List<Area> areaList;
+        List<ShopCategory> shopCategoryList;
         try {
             areaList = areaService.getAreaList();
             shopCategoryList = shopCategoryService.getShopCategoryList(new ShopCategory());
@@ -169,7 +170,7 @@ public class ShopManagementController {
             shop.setOwner(owner);
             ShopExecution se = null;
             try {
-                se = shopService.addShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());//shopImg报错，因为addShop接收的是一个File类型的参数。
+                se = shopService.addShop(shop, new ImageHolder(shopImg.getOriginalFilename(),shopImg.getInputStream()));//shopImg报错，因为addShop接收的是一个File类型的参数。
                 //CommonsMultipartFile中有函数getInputStream，我们可以利用该函数将CommonsMultipartFile转换成为一个File类型的变量
                 if (se.getState() == ShopStateEnum.CHECK.getState()) {
                     modelMap.put("success", true);
@@ -225,9 +226,9 @@ public class ShopManagementController {
             ShopExecution se = null;
             try {
                 if (shopImg == null) {
-                    se = shopService.modifyShop(shop, null, null);//shopImg报错，因为addShop接收的是一个File类型的参数。
+                    se = shopService.modifyShop(shop, null);//shopImg报错，因为addShop接收的是一个File类型的参数。
                 } else {
-                    se = shopService.modifyShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
+                    se = shopService.modifyShop(shop, new ImageHolder(shopImg.getOriginalFilename(),shopImg.getInputStream()));
                 }//shopImg报错，因为addShop接收的是一个File类型的参数。
                 //CommonsMultipartFile中有函数getInputStream，我们可以利用该函数将CommonsMultipartFile转换成为一个File类型的变量
                 if (se.getState() == ShopStateEnum.SUCCESS.getState()) {

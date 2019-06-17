@@ -1,6 +1,7 @@
 package com.o2o.service.Impl;
 
 import com.o2o.dao.ShopDao;
+import com.o2o.dto.ImageHolder;
 import com.o2o.dto.ShopExecution;
 import com.o2o.entity.Shop;
 import com.o2o.enums.ShopStateEnum;
@@ -33,7 +34,7 @@ public class ShopServiceImpl implements ShopService {
      **/
     @Override
     @Transactional
-    public ShopExecution addShop(Shop shop, InputStream shopImgInputStream, String fileName) {
+    public ShopExecution addShop(Shop shop, ImageHolder thumbnail) {
         if (shop == null) {
             return new ShopExecution(ShopStateEnum.NULL_SHOP);
         }
@@ -48,10 +49,10 @@ public class ShopServiceImpl implements ShopService {
             if (effectiveNumber <= 0) {
                 throw new ShopOperationException("商铺信息插入失败");
             } else {
-                if (shopImgInputStream != null) {
+                if (thumbnail.getImage() != null) {
                     try {
                         //插入图片信息，首先生成图片
-                        addShopImg(shop, shopImgInputStream, fileName);
+                        addShopImg(shop, thumbnail);
                     } catch (Exception e) {
                         throw new ShopOperationException("插入图片信息失败");
                     }
@@ -67,11 +68,11 @@ public class ShopServiceImpl implements ShopService {
         return new ShopExecution(ShopStateEnum.SUCCESS);
     }
 
-    private void addShopImg(Shop shop, InputStream shopImgInputStream, String fileName) {
+    private void addShopImg(Shop shop, ImageHolder thumbnail) {
         //获取图片目录的相对值
         String destination = PathUtil.getShopImgPath(shop.getShopId());
         //获取图片目录的绝对值
-        String shopImgAddress = ImageUtil.generateThumbnails(shopImgInputStream, fileName, destination);//生成图片存储的相对地址，并且将图片放入该地址
+        String shopImgAddress = ImageUtil.generateThumbnails(thumbnail, destination);//生成图片存储的相对地址，并且将图片放入该地址
         shop.setShopImg(shopImgAddress);
 
     }
@@ -82,18 +83,18 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public ShopExecution modifyShop(Shop shop, InputStream shopImgInputStream, String fileName) throws ShopOperationException {
+    public ShopExecution modifyShop(Shop shop, ImageHolder thumbnail) throws ShopOperationException {
         if (shop == null || shop.getShopId() == null) {
             return new ShopExecution(ShopStateEnum.NULL_SHOP);
         }
         //判断是否需要处理图片
         try {
-            if (shopImgInputStream != null && fileName != null && !fileName.equals("")) {
+            if (thumbnail.getImage() != null && thumbnail.getImageName() != null && !thumbnail.getImageName().equals("")) {
                 Shop tempShop = shopDao.queryByShopId(shop.getShopId());
                 if (tempShop.getShopImg() != null) {
                     ImageUtil.deleteFileOrPath(tempShop.getShopImg());
                 }
-                addShopImg(shop, shopImgInputStream, fileName);
+                addShopImg(shop, thumbnail);
             }
             //更新店铺信息
             shop.setLastEditTime(new Date());
