@@ -8,6 +8,8 @@ public interface ProductImgDao {
 
     /**
      * 批量添加商品详情图片
-    **/
+     **/
     int batchInsertProductImg(List<ProductImg> productImgList);
+
+    int deleteProductImgByProductId(long productId);
 }

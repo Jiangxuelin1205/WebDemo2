@@ -1,19 +1,23 @@
 package com.o2o.dao;
 
 import com.o2o.BaseTest;
-import com.o2o.entity.Product;
-import com.o2o.entity.ProductCategory;
-import com.o2o.entity.Shop;
-import com.o2o.entity.ShopCategory;
+import com.o2o.entity.*;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class ProductDaoTest extends BaseTest {
 
     @Autowired
     ProductDao productDao;
+
+    @Autowired
+    ProductImgDao productImgDao;
 
     @Test
     public void insertProduct() {
@@ -37,4 +41,27 @@ public class ProductDaoTest extends BaseTest {
 
         productDao.insertProduct(product);
     }
+
+    @Test
+    public void query_product_by_id(){
+        Product product=productDao.queryProductById(4);
+    }
+
+    @Test
+    public void update_product(){
+        Product product = new Product();
+        ProductCategory pc = new ProductCategory();
+        Shop shop = new Shop();
+        shop.setShopId(2L);
+        pc.setProductCategoryId(1L);
+        product.setProductId(2L);
+        product.setShop(shop);
+        product.setProductName("第二个产品");
+        product.setProductCategory(pc);
+        // 修改productId为1的商品的名称
+        // 以及商品类别并校验影响的行数是否为1
+        int effectedNum = productDao.updateProduct(product);
+        assertEquals(effectedNum, 1);
+    }
+
 }
