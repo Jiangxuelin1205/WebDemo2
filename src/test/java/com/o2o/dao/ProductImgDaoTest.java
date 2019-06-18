@@ -42,4 +42,10 @@ public class ProductImgDaoTest extends BaseTest {
         int effectedNumber=productImgDao.deleteProductImgByProductId(4L);
         System.out.println(effectedNumber);
     }
+
+    @Test
+    public void query_product_img_list(){
+        List<ProductImg> images=productImgDao.queryProductImgList(2L);
+        System.out.println(images.size());
+    }
 }

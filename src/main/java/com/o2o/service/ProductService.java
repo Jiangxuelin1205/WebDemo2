@@ -11,4 +11,10 @@ public interface ProductService {
 
     ProductExecution addProduct(Product product, ImageHolder thumbNail,
                                 List<ImageHolder> imageHolderList) throws ProductOperationException;
+
+    ProductExecution modifyProduct(Product product, ImageHolder thumbnail, List<ImageHolder> productImgHolderList)
+            throws ProductOperationException;
+
+    Product getProductById(int productId);
+
 }

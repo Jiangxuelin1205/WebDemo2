@@ -52,12 +52,54 @@ public class ProductServiceImpl implements ProductService {
 
         //此时product中已经被写入productId，结合imageHolderList处理商品详情图
         if (imageHolderList != null && imageHolderList.size() > 0) {
-            addProductImg(product, imageHolderList);
+            addProductImgList(product, imageHolderList);
         }
         return new ProductExecution(ProductStateEnum.SUCCESS);
     }
 
-    private void addProductImg(Product product, List<ImageHolder> images) {
+    @Override
+    @Transactional
+    public ProductExecution modifyProduct(Product product, ImageHolder thumbnail, List<ImageHolder> productImgHolderList) throws ProductOperationException {
+        if (product == null || product.getShop() == null || product.getShop().getShopId() == null) {
+            return new ProductExecution(ProductStateEnum.EMPTY);
+        }
+        product.setLastEditTime(new Date());
+        if (thumbnail != null) {
+            Product tempProduct = productDao.queryProductById(product.getProductId());
+            if (tempProduct.getImgAddr() != null) {
+                ImageUtil.deleteFileOrPath(tempProduct.getImgAddr());
+            }
+            addImage(product, thumbnail);
+        }
+        if (productImgHolderList != null && productImgHolderList.size() > 0) {
+            deleteProductImgList(product.getProductId());
+            addProductImgList(product, productImgHolderList);
+        }
+        try {
+            int effectedNumber = productDao.updateProduct(product);
+            if (effectedNumber <= 0) {
+                throw new ProductOperationException("商品信息更新失败");
+            }
+            return new ProductExecution(ProductStateEnum.SUCCESS, product);
+        } catch (Exception e) {
+            throw new ProductOperationException("商品信息更新失败:"+e.toString());
+        }
+    }
+
+    private void deleteProductImgList(Long productId) {
+        List<ProductImg> productImgs=productImgDao.queryProductImgList(productId);
+        for(ProductImg productImg:productImgs){
+            ImageUtil.deleteFileOrPath(productImg.getImgAddr());
+        }
+        productImgDao.deleteProductImgByProductId(productId);
+    }
+
+    @Override
+    public Product getProductById(int productId) {
+        return productDao.queryProductById(productId);
+    }
+
+    private void addProductImgList(Product product, List<ImageHolder> images) {
         String destination = PathUtil.getShopImgPath(product.getShop().getShopId());
         List<ProductImg> productImageList = new ArrayList<>();
         //遍历images，将其转换成为productImg之后，存入productImgList中，方便之后批量插入图片

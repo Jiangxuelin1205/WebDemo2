@@ -20,4 +20,19 @@
         product_id =
         #{productId}
     </delete>
+    <select id="queryProductImgList" parameterType="long" resultType="com.o2o.entity.ProductImg">
+        SELECT
+        product_img_id,
+        img_addr,
+        img_desc,
+        priority,
+        create_time,
+        product_id
+        FROM tb_product_img
+        WHERE
+        product_id=#{productId}
+        ORDER BY
+        priority
+        ASC
+    </select>
 </mapper>
