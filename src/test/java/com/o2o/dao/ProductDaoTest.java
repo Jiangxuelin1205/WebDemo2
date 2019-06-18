@@ -64,4 +64,5 @@ public class ProductDaoTest extends BaseTest {
         assertEquals(effectedNum, 1);
     }
 
+
 }

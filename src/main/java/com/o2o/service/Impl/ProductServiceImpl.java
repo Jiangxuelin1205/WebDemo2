@@ -5,6 +5,7 @@ import com.o2o.dao.ProductImgDao;
 import com.o2o.dto.ImageHolder;
 import com.o2o.dto.ProductExecution;
 import com.o2o.entity.Product;
+import com.o2o.entity.ProductCategory;
 import com.o2o.entity.ProductImg;
 import com.o2o.enums.ProductStateEnum;
 import com.o2o.exception.ProductOperationException;
@@ -95,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(int productId) {
+    public Product getProductById(long productId) {
         return productDao.queryProductById(productId);
     }
 
