@@ -1,6 +1,7 @@
 package com.o2o.service.Impl;
 
 import com.o2o.dao.ProductCategoryDao;
+import com.o2o.dao.ProductDao;
 import com.o2o.dto.ProductCategoryExecution;
 import com.o2o.entity.ProductCategory;
 import com.o2o.enums.ProductCategoryStateEnum;
@@ -18,6 +19,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Autowired
     ProductCategoryDao productCategoryDao;
+
+    @Autowired
+    ProductDao productDao;
 
     @Override
     public List<ProductCategory> getProductCategory(long shopId) {
@@ -50,6 +54,15 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public ProductCategoryExecution deleteProductCategory(long productCategoryId, long shopId) throws ProductCategoryOperationException {
         if (productCategoryId <= 0 || shopId <= 0) {
             throw new ProductCategoryOperationException("商品类别信息错误或者店铺信息错误");
+        }
+
+        try {
+            int effectedNumber = productDao.updateProductCategoryToNull(productCategoryId);
+            if (effectedNumber < 0) {
+                throw new ProductCategoryOperationException("商品类型更新失败");
+            }
+        } catch (Exception e) {
+            throw new ProductCategoryOperationException("delete product Category error:" + e.getMessage());
         }
         try {
             int effectedNumber = productCategoryDao.deleteProductCategory(productCategoryId, shopId);

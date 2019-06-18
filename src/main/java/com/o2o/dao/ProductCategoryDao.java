@@ -11,6 +11,5 @@ public interface ProductCategoryDao {
 
     int batchInsertProductCategory(List<ProductCategory> productCategoryList);
 
-    //TODO：再删除指定的productCategory之后，还有一些具有副作用的操作。。。想不起来了
     int deleteProductCategory(@Param("productCategoryId") long productCategoryId, @Param("shopId") long shopId);
 }
