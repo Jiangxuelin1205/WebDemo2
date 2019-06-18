@@ -2,6 +2,7 @@ package com.o2o.dao;
 
 import com.o2o.BaseTest;
 import com.o2o.entity.*;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,12 +44,12 @@ public class ProductDaoTest extends BaseTest {
     }
 
     @Test
-    public void query_product_by_id(){
-        Product product=productDao.queryProductById(4);
+    public void query_product_by_id() {
+        Product product = productDao.queryProductById(4);
     }
 
     @Test
-    public void update_product(){
+    public void update_product() {
         Product product = new Product();
         ProductCategory pc = new ProductCategory();
         Shop shop = new Shop();
@@ -64,5 +65,31 @@ public class ProductDaoTest extends BaseTest {
         assertEquals(effectedNum, 1);
     }
 
+    @Test
+    public void query_product_count() {
+        Product product = new Product();
+        product.setProductName("name");
+        System.out.println(productDao.queryProductCount(product));
+    }
+
+    @Test
+    public void delete_product() {
+        int effectedNumber = productDao.deleteProduct(10, 2);
+        Assert.assertEquals(effectedNumber, 1);
+    }
+
+    @Test
+    public void update_product_to_null() {
+        int effectedNumber = productDao.updateProductCategoryToNull(4);
+        Assert.assertEquals(effectedNumber, 1);
+    }
+
+    @Test
+    public void query_product_list() {
+        Product product=new Product();
+        product.setProductName("name");
+        List<Product> list=productDao.queryProductList(product,2,2);
+        System.out.println(list);
+    }
 
 }

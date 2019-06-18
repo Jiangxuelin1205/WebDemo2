@@ -100,4 +100,71 @@
         WHERE product_id=#{productId}
         AND shop_id=#{shop.shopId}
     </update>
+    <select id="queryProductCount" resultType="int">
+        SELECT count(1) FROM tb_product
+        <where>
+            <if test="productCondition.shop!=null and productCondition.shop.shopId!=null">
+                and shop_id=#{productCondition.shop.shopId}
+            </if>
+            <if test="productCondition.productCategory!=null and productCondition.productCategory.productCategoryId!=null">
+                and product_category_id=#{productCondition.productCategory.productCategoryId}
+            </if>
+            <if test="productCondition.productName!=null">
+                and product_name LIKE '%${productCondition.productName}%'
+            </if>
+            <if test="productCondition.enableStatus!=null">
+                and enable_status = #{productCondition.enableStatus}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteProduct">
+        DELETE FROM tb_product
+        WHERE
+        product_id=#{productId}
+        and shop_id=#{shopId}
+    </delete>
+    <update id="updateProductCategoryToNull" parameterType="long">
+        UPDATE tb_product
+        SET
+        product_category_id=null
+        where product_category_id=
+        #{productCategoryId}
+    </update>
+    <select id="queryProductList" resultType="com.o2o.entity.Product">
+        SELECT
+        product_id,
+        product_name,
+        product_desc,
+        img_addr,
+        normal_price,
+        promotion_price,
+        point,
+        priority,
+        create_time,
+        last_edit_time,
+        enable_status,
+        product_category_id,
+        shop_id
+        FROM
+        tb_product
+        <where>
+            <if test="productCondition.shop!=null and productCondition.shop.shopId!=null">
+                and shop_id=#{productCondition.shop.shopId}
+            </if>
+            <if test="productCondition.productCategory!=null and productCondition.productCategory.productCategoryId!=null">
+                and product_category_id=#{productCondition.productCategory.productCategoryId}
+            </if>
+            <if test="productCondition.productName!=null">
+                and product_name LIKE '%${productCondition.productName}%'
+            </if>
+            <if test="productCondition.enableStatus!=null">
+                and enable_status = #{productCondition.enableStatus}
+            </if>
+        </where>
+        ORDER BY
+        priority
+        DESC
+        LIMIT #{rowIndex},#{pageSize}
+
+    </select>
 </mapper>

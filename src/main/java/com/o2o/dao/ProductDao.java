@@ -1,6 +1,9 @@
 package com.o2o.dao;
 
 import com.o2o.entity.Product;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ProductDao {
 
@@ -9,4 +12,13 @@ public interface ProductDao {
     Product queryProductById(long productId);
 
     int updateProduct(Product product);
+
+    List<Product> queryProductList(@Param("productCondition") Product productCondition, @Param("rowIndex") int rowIndex,
+                                   @Param("pageSize") int pageSize);
+
+    int queryProductCount(@Param("productCondition") Product productCondition);
+
+    int updateProductCategoryToNull(long productCategoryId);
+
+    int deleteProduct(@Param("productId") long productId, @Param("shopId") long shopId);
 }
