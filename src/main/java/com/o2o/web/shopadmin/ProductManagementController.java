@@ -5,6 +5,7 @@ import com.o2o.dto.ProductExecution;
 import com.o2o.entity.Product;
 import com.o2o.entity.ProductCategory;
 import com.o2o.entity.Shop;
+import com.o2o.enums.ProductCategoryStateEnum;
 import com.o2o.enums.ProductStateEnum;
 import com.o2o.exception.ProductOperationException;
 import com.o2o.service.ProductCategoryService;
@@ -39,6 +40,49 @@ public class ProductManagementController {
     ProductCategoryService productCategoryService;
 
     private final int IMAGE_MAX_COUNT = 6;
+
+    @RequestMapping(value = "/getproductlistbyshop", method = RequestMethod.GET)
+    @ResponseBody
+    private Map<String, Object> getProductListByShop(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        int pageIndex = HttpServletRequestUtil.getInt(request, "pageIndex");
+        int pageSize = HttpServletRequestUtil.getInt(request, "pageSize");
+        Shop currentShop = (Shop) request.getSession().getAttribute("currentShop");
+        if ((pageIndex > -1) && (pageSize > -1) && (currentShop != null) && (currentShop.getShopId() != null)) {
+            long productCategoryId = HttpServletRequestUtil.getLong(request, "productCategoryId");
+            String productName = HttpServletRequestUtil.getString(request, "productName");
+            Product productCondition = compactProductCondition(currentShop.getShopId(), productCategoryId, productName);
+            ProductExecution pe = productService.getProductList(productCondition, pageIndex, pageSize);
+            if (pe.getState() == ProductStateEnum.SUCCESS.getState()) {
+                modelMap.put("productList", pe.getProductList());
+                modelMap.put("count", pe.getCount());
+                modelMap.put("success", true);
+            } else {
+                modelMap.put("success", false);
+                modelMap.put("errMsg", "empty pageSize or pageIndex or shopId");
+            }
+        } else {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", "empty pageSize or pageIndex or shopId");
+        }
+        return modelMap;
+    }
+
+    private Product compactProductCondition(Long shopId, long productCategoryId, String productName) {
+        Product productCondition = new Product();
+        Shop shop = new Shop();
+        shop.setShopId(shopId);
+        productCondition.setShop(shop);
+        if (productCategoryId != -1L) {
+            ProductCategory productCategory = new ProductCategory();
+            productCategory.setProductCategoryId(productCategoryId);
+            productCondition.setProductCategory(productCategory);
+        }
+        if (productName != null) {
+            productCondition.setProductName(productName);
+        }
+        return productCondition;
+    }
 
     @RequestMapping(value = "/addproduct", method = RequestMethod.POST)
     @ResponseBody

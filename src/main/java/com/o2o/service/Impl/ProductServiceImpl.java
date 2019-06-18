@@ -11,6 +11,7 @@ import com.o2o.enums.ProductStateEnum;
 import com.o2o.exception.ProductOperationException;
 import com.o2o.service.ProductService;
 import com.o2o.util.ImageUtil;
+import com.o2o.util.PageCalculator;
 import com.o2o.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,13 +84,13 @@ public class ProductServiceImpl implements ProductService {
             }
             return new ProductExecution(ProductStateEnum.SUCCESS, product);
         } catch (Exception e) {
-            throw new ProductOperationException("商品信息更新失败:"+e.toString());
+            throw new ProductOperationException("商品信息更新失败:" + e.toString());
         }
     }
 
     private void deleteProductImgList(Long productId) {
-        List<ProductImg> productImgs=productImgDao.queryProductImgList(productId);
-        for(ProductImg productImg:productImgs){
+        List<ProductImg> productImgs = productImgDao.queryProductImgList(productId);
+        for (ProductImg productImg : productImgs) {
             ImageUtil.deleteFileOrPath(productImg.getImgAddr());
         }
         productImgDao.deleteProductImgByProductId(productId);
@@ -98,6 +99,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(long productId) {
         return productDao.queryProductById(productId);
+    }
+
+    @Override
+    @Transactional
+    public ProductExecution getProductList(Product productCondition, int pageIndex, int pageSize) {
+        int rowIndex = PageCalculator.calculateRowIndex(pageIndex, pageSize);
+        List<Product> products = productDao.queryProductList(productCondition, rowIndex, pageSize);
+        int count = productDao.queryProductCount(productCondition);
+        ProductExecution pe = new ProductExecution();
+        pe.setCount(count);
+        pe.setProductList(products);
+        return pe;
     }
 
     private void addProductImgList(Product product, List<ImageHolder> images) {

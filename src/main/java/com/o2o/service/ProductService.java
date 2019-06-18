@@ -18,4 +18,5 @@ public interface ProductService {
 
     Product getProductById(long productId);//直接 调用的是queryProductById，因此不做测试
 
+    ProductExecution getProductList(Product productCondition, int pageIndex, int pageSize);
 }
