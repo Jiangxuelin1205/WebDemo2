@@ -165,6 +165,5 @@
         priority
         DESC
         LIMIT #{rowIndex},#{pageSize}
-
     </select>
 </mapper>

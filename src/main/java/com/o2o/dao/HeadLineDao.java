@@ -37,7 +37,6 @@ public interface HeadLineDao {
      */
     int deleteHeadLine(long headLineId);
 
-    /**
-     */
+   
     int batchDeleteHeadLine(List<Long> lineIdList);
 }
