@@ -8,7 +8,7 @@ public class PersonInfo {
     private String name;
     private String profileImg;
     private String email;
-    private String gender;
+    private int gender;
     private Integer enableStatus;
 
     //1. 顾客 2. 店家 3. 超级管理员
@@ -48,11 +48,11 @@ public class PersonInfo {
         this.email = email;
     }
 
-    public String getGender() {
+    public int getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(int gender) {
         this.gender = gender;
     }
 
