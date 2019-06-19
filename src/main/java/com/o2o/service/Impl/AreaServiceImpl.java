@@ -5,6 +5,7 @@ import com.o2o.entity.Area;
 import com.o2o.service.AreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class AreaServiceImpl implements AreaService {
     private AreaDao areaDao;
 
     @Override
+    @Transactional
     public List<Area> getAreaList() {
         return areaDao.queryArea();
     }

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ShopCategoryDao {
 
-    List<ShopCategory> queryShopCategory(@Param("ShopCategoryCondition")
+    List<ShopCategory> queryShopCategory(@Param("shopCategoryCondition")
                                          ShopCategory shopCategoryCondition);//传入参数，根据传入的参数选择出商铺的类别
 }
