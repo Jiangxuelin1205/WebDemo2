@@ -6,7 +6,7 @@ public class LocalAuth {
 
     private Long localAuthId;
     // 帐号
-    private String username;
+    private String userName;
     // 密码
     private String password;
     // 创建时间
@@ -24,12 +24,12 @@ public class LocalAuth {
         this.localAuthId = localAuthId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String username) {
+        this.userName = username;
     }
 
     public String getPassword() {

@@ -6,7 +6,7 @@ public class PersonInfo {
 
     private Long userId;
     private String name;
-    private String profileImage;
+    private String profileImg;
     private String email;
     private String gender;
     private Integer enableStatus;
@@ -32,12 +32,12 @@ public class PersonInfo {
         this.name = name;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public String getProfileImg() {
+        return profileImg;
     }
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+    public void setProfileImg(String profileImage) {
+        this.profileImg = profileImage;
     }
 
     public String getEmail() {
