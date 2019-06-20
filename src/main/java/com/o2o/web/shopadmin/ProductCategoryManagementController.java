@@ -38,7 +38,7 @@ public class ProductCategoryManagementController {
         List<ProductCategory> list = null;*/
         if (currentShop != null && currentShop.getShopId() > 0) {
             //能够成功获取商铺信息
-            list = productCategoryService.getProductCategory(currentShop.getShopId());
+            list = productCategoryService.getProductCategoryList(currentShop.getShopId());
             return new Result<>(true, list);
         } else {
             ProductCategoryStateEnum se = ProductCategoryStateEnum.INNER_ERROR;

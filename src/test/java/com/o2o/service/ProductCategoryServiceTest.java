@@ -6,7 +6,6 @@ import com.o2o.entity.ProductCategory;
 import com.o2o.exception.ProductCategoryOperationException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,7 +18,7 @@ public class ProductCategoryServiceTest extends BaseTest {
 
     @Test
     public void query_product_category_test() {
-        List<ProductCategory> shopCategories = productCategoryService.getProductCategory(2L);
+        List<ProductCategory> shopCategories = productCategoryService.getProductCategoryList(2L);
         System.out.println(shopCategories.size());
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProductCategoryService {
 
-    List<ProductCategory> getProductCategory(long shopId);
+    List<ProductCategory> getProductCategoryList(long shopId);
 
     ProductCategoryExecution batchAddProductCategory(List<ProductCategory> productCategoryList)
             throws ProductCategoryOperationException;

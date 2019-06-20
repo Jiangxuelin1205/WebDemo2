@@ -5,14 +5,11 @@ import com.o2o.dto.ProductExecution;
 import com.o2o.entity.Product;
 import com.o2o.entity.ProductCategory;
 import com.o2o.entity.Shop;
-import com.o2o.enums.ProductCategoryStateEnum;
 import com.o2o.enums.ProductStateEnum;
 import com.o2o.exception.ProductOperationException;
 import com.o2o.service.ProductCategoryService;
 import com.o2o.service.ProductService;
 import com.o2o.util.HttpServletRequestUtil;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,7 +167,7 @@ public class ProductManagementController {
             modelMap.put("errMsg", "empty product Id");
         }
         Product product = productService.getProductById(productId);
-        List<ProductCategory> productCategoryList = productCategoryService.getProductCategory(product.getShop().getShopId());
+        List<ProductCategory> productCategoryList = productCategoryService.getProductCategoryList(product.getShop().getShopId());
         modelMap.put("success", true);
         modelMap.put("product", product);
         modelMap.put("productCategoryList", productCategoryList);
