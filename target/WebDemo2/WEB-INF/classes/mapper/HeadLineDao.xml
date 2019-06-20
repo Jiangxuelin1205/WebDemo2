@@ -52,8 +52,8 @@
         line_id
         IN
         <foreach collection="list" item="lineId" open="(" separator="," close=")">
-            #{lineId}
-        </foreach>
+        #{lineId}
+    </foreach>
     </select>
     <insert id="insertHeadLine" useGeneratedKeys="true" keyProperty="lineId"
             keyColumn="line_id">

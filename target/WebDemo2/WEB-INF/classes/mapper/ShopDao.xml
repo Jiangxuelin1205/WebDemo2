@@ -75,6 +75,13 @@
             <if test="shopCondition.shopName!=null">
                 AND s.shop_name LIKE %${shopCondition.shopName}%
             </if>
+            <if test="shopCondition.shopCategory!=null and shopCondition.shopCategory.parent!=null
+                        and shopCondition.shopCategory.parent.shopCategoryId!=null">
+                and s.shop_category_id in (select shop_category_id from
+                tb_shop_category
+                WHERE parent_id =
+                #{shopCondition.shopCategory.parent.shopCategoryId})
+            </if>
             <if test="shopCondition.enableStatus!=null">
                 AND s.enable_status=#{shopCondition.enableStatus}
             </if>
@@ -106,6 +113,13 @@
             </if>
             <if test="shopCondition.enableStatus!=null">
                 AND s.enable_status=#{shopCondition.enableStatus}
+            </if>
+            <if test="shopCondition.shopCategory!=null and shopCondition.shopCategory.parent!=null
+                        and shopCondition.shopCategory.parent.shopCategoryId!=null">
+                and s.shop_category_id in (select shop_category_id from
+                tb_shop_category
+                WHERE parent_id =
+                #{shopCondition.shopCategory.parent.shopCategoryId})
             </if>
             <if test="shopCondition.shopCategory!=null and shopCondition.shopCategory.shopCategoryId!=null">
                 AND s.shop_category_id=#{shopCondition.shopCategory.shopCategoryId}
