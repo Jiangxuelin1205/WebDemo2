@@ -20,9 +20,8 @@ public class ShopCategoryDaoTest extends BaseTest {
     @Test
     public void test_shopcategory_dao_with_empty_parent(){
         List<ShopCategory> shopCategoryList=shopCategoryDao.queryShopCategory(new ShopCategory());
-        Assert.assertEquals(2,shopCategoryList.size());
+        Assert.assertEquals(1,shopCategoryList.size());
     }
-
     @Test
     public void test_shopcategory_dao_with_parent(){
         ShopCategory parentCategory=new ShopCategory();
@@ -50,10 +49,22 @@ public class ShopCategoryDaoTest extends BaseTest {
     @Test
     public void insert_shop_category(){
        ShopCategory shopCategory=new ShopCategory();
+       shopCategory.setShopCategoryName("sdfsf");
        shopCategory.setParent(null);
        shopCategory.setCreateTime(new Date());
        shopCategory.setShopCategoryImg("sdf");
+       shopCategory.setPriority(1);
         int effectedNumber=shopCategoryDao.insertShopCategory(shopCategory);
+    }
+
+    @Test
+    public void update_category(){
+        ShopCategory shopCategory=new ShopCategory();
+        shopCategory.setShopCategoryName("sdfsdf");
+        shopCategory.setShopCategoryId(1L);
+        shopCategory.setLastEditTime(new Date());
+        int effectedNumber=shopCategoryDao.updateShopCategory(shopCategory);
+        Assert.assertEquals(effectedNumber,1);
     }
 
     @Test

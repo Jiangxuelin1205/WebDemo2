@@ -55,7 +55,7 @@
 		priority,create_time,last_edit_time,parent_id)
 		VALUES
 		(#{shopCategoryName},#{shopCategoryDesc},#{shopCategoryImg},
-		#{priority},#{createTime},#{lastEditTime},#{parentId})
+		#{priority},#{createTime},#{lastEditTime},#{parent.shopCategoryId})
 	</insert>
     <update id="updateShopCategory" parameterType="com.o2o.entity.ShopCategory">
         update tb_shop_category
@@ -65,7 +65,7 @@
             <if test="shopCategoryImg != null">shop_category_img=#{shopCategoryImg},</if>
             <if test="priority != null">priority=#{priority},</if>
             <if test="lastEditTime != null">last_edit_time=#{lastEditTime},</if>
-            <if test="parentId != null">parent_id=#{parentId}</if>
+            <if test="parent != null and parent.shopCategoryId!=null">parent_id=#{parent.shopCategoryId}</if>
         </set>
         where shop_category_id=#{shopCategoryId}
     </update>
