@@ -11,6 +11,7 @@ import java.security.SecureRandom;
 public class DESUtil {
     private static Key key;
     // 设置密钥key
+    @SuppressWarnings("FieldCanBeLocal")
     private static String KEY_STR = "myKey";
     private static String CHARSETNAME = "UTF-8";
     private static String ALGORITHM = "DES";
