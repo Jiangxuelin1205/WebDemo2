@@ -32,7 +32,7 @@ public class ProductCategoryManagementController {
     private Result<List<ProductCategory>> getProductCategoryList(HttpServletRequest request) {
         //从request中获取shopId
         Shop currentShop = (Shop) request.getSession().getAttribute("currentShop");
-        List<ProductCategory> list = null;
+        List<ProductCategory> list;
        /* Shop currentShop = new Shop();
         currentShop.setShopId(2L);
         List<ProductCategory> list = null;*/
