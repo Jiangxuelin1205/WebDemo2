@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.o2o.cache.JedisUtil;
+import com.o2o.cache.JedisPoolWriper;
 import com.o2o.dao.AreaDao;
 import com.o2o.entity.Area;
 import com.o2o.exception.AreaOperationException;
@@ -25,25 +25,13 @@ import java.util.List;
 
 @Service
 public class AreaServiceImpl implements AreaService {
-
-    /*@Autowired
-    private AreaDao areaDao;
-
-    @Override
-    @Transactional
-    public List<Area> getAreaList() {
-        return areaDao.queryArea();
-    }*/
     @Autowired
     private AreaDao areaDao;
 
-    private JedisPool jedisPool;
-   /* @Autowired
-    private JedisUtil.Keys jedisKeys;
-
     @Autowired
-    private JedisUtil.Strings jedisStrings;*/
+    private JedisPoolWriper jedisPoolWriper;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private String AREALISTKEY = "arealist";
 
     private static Logger logger = LoggerFactory.getLogger(AreaServiceImpl.class);
@@ -59,7 +47,7 @@ public class AreaServiceImpl implements AreaService {
         ObjectMapper mapper = new ObjectMapper();
         // 判断key是否存在
 
-        Jedis sjedis = jedisPool.getResource();
+        Jedis sjedis = jedisPoolWriper.getJedisPool().getResource();
         boolean exists = sjedis.exists(key);
         sjedis.close();
         if(!exists){
@@ -74,8 +62,6 @@ public class AreaServiceImpl implements AreaService {
             }
             sjedis.set(SafeEncoder.encode(key),SafeEncoder.encode(jsonString));
         }else {
-            // 若存在，则直接从redis里面取出相应数据
-//            String jsonString = jedisStrings.get(key);
             String jsonString = sjedis.get(key);
             sjedis.close();
             // 指定要将string转换成的集合类型
