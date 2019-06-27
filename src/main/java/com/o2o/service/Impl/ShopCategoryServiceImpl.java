@@ -32,9 +32,6 @@ public class ShopCategoryServiceImpl implements ShopCategoryService {
     @Autowired
     private JedisPoolWriper jedisPoolWriper;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private String SHOPCATEGORYKEY = "shopcategorylist";
-
     private static Logger logger = LoggerFactory.getLogger(AreaServiceImpl.class);
 
     @Override

@@ -32,8 +32,7 @@ public class HeadLineServiceImpl implements HeadLineService {
     @Autowired
     private JedisPoolWriper jedisPoolWriper;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private String HEADLINEKEY = "headlinelist";
+
 
     private static Logger logger = LoggerFactory.getLogger(AreaServiceImpl.class);
 

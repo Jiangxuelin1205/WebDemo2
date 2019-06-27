@@ -30,8 +30,7 @@ public class AreaServiceImpl implements AreaService {
     @Autowired
     private JedisPoolWriper jedisPoolWriper;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private String AREALISTKEY = "arealist";
+
 
     private static Logger logger = LoggerFactory.getLogger(AreaServiceImpl.class);
 
