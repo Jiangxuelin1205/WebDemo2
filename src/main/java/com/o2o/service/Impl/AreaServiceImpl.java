@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 import redis.clients.util.SafeEncoder;
 
 import java.io.IOException;
@@ -39,17 +38,11 @@ public class AreaServiceImpl implements AreaService {
     @Override
     @Transactional
     public List<Area> getAreaList() {
-        // 定义redis的key
         String key = AREALISTKEY;
-        // 定义接收对象
-        List<Area> areaList = null;
-        // 定义jackson数据转换操作类
+        List<Area> areaList;
         ObjectMapper mapper = new ObjectMapper();
-        // 判断key是否存在
-
         Jedis sjedis = jedisPoolWriper.getJedisPool().getResource();
         boolean exists = sjedis.exists(key);
-        sjedis.close();
         if(!exists){
             areaList = areaDao.queryArea();
             String jsonString;
@@ -63,8 +56,7 @@ public class AreaServiceImpl implements AreaService {
             sjedis.set(SafeEncoder.encode(key),SafeEncoder.encode(jsonString));
         }else {
             String jsonString = sjedis.get(key);
-            sjedis.close();
-            // 指定要将string转换成的集合类型
+
             JavaType javaType = mapper.getTypeFactory().constructParametricType(ArrayList.class, Area.class);
             try {
                 // 将相关key对应的value里的的string转换成对象的实体类集合
@@ -83,6 +75,7 @@ public class AreaServiceImpl implements AreaService {
                 throw new AreaOperationException(e.getMessage());
             }
         }
+        sjedis.close();
         return areaList;
     }
 }
