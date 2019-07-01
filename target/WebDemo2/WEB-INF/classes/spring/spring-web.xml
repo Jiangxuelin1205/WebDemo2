@@ -29,4 +29,29 @@
     </bean>
     <!-- 4.扫描web相关的bean -->
     <context:component-scan base-package="com.o2o.web" />
+
+    <!--5.拦截器配置-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/shopadmin/**" />
+            <bean id="ShopInterceptor"
+                  class="com.o2o.interceptor.shopadmin.ShopLoginInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/shopadmin/**"/>
+            <!--shop list page-->
+            <mvc:exclude-mapping path="/shopadmin/getshoplist"/>
+            <mvc:exclude-mapping path="/shopadmin/shoplist"/>
+            <!-- shopregister page -->
+            <mvc:exclude-mapping path="/shopadmin/getshopinitinfo" />
+            <mvc:exclude-mapping path="/shopadmin/registershop" />
+            <mvc:exclude-mapping path="/shopadmin/shopoperation" />
+            <!-- shopmanage page -->
+            <mvc:exclude-mapping path="/shopadmin/shopmanagement" />
+            <mvc:exclude-mapping path="/shopadmin/getshopmanagementinfo" />
+            
+            <bean id="ShopPermissionInterceptor"
+                  class="com.o2o.interceptor.shopadmin.ShopPermissionInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>

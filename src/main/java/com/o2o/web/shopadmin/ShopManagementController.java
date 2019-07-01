@@ -77,11 +77,7 @@ public class ShopManagementController {
     @RequestMapping(value = "/getshoplist", method = RequestMethod.GET)
     private Map<String, Object> getShopList(HttpServletRequest request) {
         Map<String, Object> modelMap = new HashMap<>();
-//        PersonInfo personInfo= (PersonInfo) request.getSession().getAttribute("user");
-        PersonInfo user = new PersonInfo();
-        user.setUserId(1L);
-        request.setAttribute("user", user);
-        user = (PersonInfo) request.getAttribute("user");
+        PersonInfo user= (PersonInfo) request.getSession().getAttribute("user");
         try {
             Shop shopCondition = new Shop();
             shopCondition.setOwner(user);
