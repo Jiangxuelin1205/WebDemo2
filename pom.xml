@@ -19,7 +19,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>4.3.7.RELEASE</spring.version>
+        <spring.version>5.3.19</spring.version>
         <jackson.version>2.9.0.pr1</jackson.version>
 
         <!-- spring版本号 -->
